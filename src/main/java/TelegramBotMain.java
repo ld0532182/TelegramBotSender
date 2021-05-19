@@ -83,14 +83,14 @@ public class TelegramBotMain extends TelegramLongPollingBot {
     }
 
     private static Root getRoot() throws IOException {
-        URL url = new URL("https://api.vk.com/method/wall.get?owner_id=-204646604&offset=1&access_token=d1aca3b8d1aca3b8d1aca3b879d1db4539dd1acd1aca3b8b10f7a75b9aadea6c8547fc5&v=5.130");
+        URL url = new URL("https://api.vk.com/method/wall.get?owner_id=-204646604&offset=1&access_token="+Token.SERVICE_TOKEN_VK.stringNumber+"&v=5.130");
         Scanner in = new Scanner((InputStream) url.getContent());
         String result = "";
         while (in.hasNext()) {
             result += in.nextLine();
         }
         ObjectMapper om = new ObjectMapper();
-        return om.readValue((result), Root.class);
+        return om.readValue(result, Root.class);
     }
 }
 

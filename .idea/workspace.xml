@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc056b8e-691b-4fd2-b80a-5d13127996f9" name="Default Changelist" comment="v0.01">
-      <change beforePath="$PROJECT_DIR$/src/main/java/BotMain.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TelegramBotMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TelegramBotMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,17 +140,6 @@
     </ignored-roots>
     <MESSAGE value="v0.01" />
     <option name="LAST_COMMIT_MESSAGE" value="v0.01" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TelegramBotMain.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
