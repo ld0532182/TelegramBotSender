@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dc056b8e-691b-4fd2-b80a-5d13127996f9" name="Default Changelist" comment="v0.01">
+    <list default="true" id="dc056b8e-691b-4fd2-b80a-5d13127996f9" name="Default Changelist" comment="Token was hidden">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Root.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Root.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TelegramBotMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TelegramBotMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,6 +51,13 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager" selected="Application.TelegramBotMain">
+    <configuration name="DoMagicTelegram" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DoMagicTelegram" />
+      <module name="BotProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Teast" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Teast" />
       <module name="BotProject" />
@@ -73,6 +82,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.TelegramBotMain" />
+        <item itemvalue="Application.DoMagicTelegram" />
         <item itemvalue="Application.TestJSON" />
         <item itemvalue="Application.Teast" />
       </list>
@@ -97,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621460733914</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Token was hidden">
+      <created>1621462852535</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1621462852535</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -139,7 +156,8 @@
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
     <MESSAGE value="v0.01" />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.01" />
+    <MESSAGE value="Token was hidden" />
+    <option name="LAST_COMMIT_MESSAGE" value="Token was hidden" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

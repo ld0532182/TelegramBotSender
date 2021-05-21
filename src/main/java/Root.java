@@ -8,7 +8,7 @@ public class Root {
         return response;
     }
 
-    public static class Response{
+    public static class Response {
         public int count;
         public List<Item> items;
 
@@ -21,7 +21,7 @@ public class Root {
         }
     }
 
-    public static class Size{
+    public static class Size {
         public int height;
         public String url;
         public String type;
@@ -32,7 +32,7 @@ public class Root {
         }
     }
 
-    public static class Photo{
+    public static class Photo {
         public int album_id;
         public int date;
         public int id;
@@ -47,46 +47,49 @@ public class Root {
         }
     }
 
-    public static class Attachment{
+    public static class Attachment {
         public String type;
         public Photo photo;
 
+        public String getType() {
+            return type;
+        }
         public Photo getPhoto() {
             return photo;
         }
     }
 
-    public static class PostSource{
+    public static class PostSource {
         public String type;
     }
 
-    public static class Comments{
+    public static class Comments {
         public int count;
         public int can_post;
         public boolean groups_can_post;
     }
 
-    public static class Likes{
+    public static class Likes {
         public int count;
         public int user_likes;
         public int can_like;
         public int can_publish;
     }
 
-    public static class Reposts{
+    public static class Reposts {
         public int count;
         public int user_reposted;
     }
 
-    public static class Views{
+    public static class Views {
         public int count;
     }
 
-    public static class Donut{
+    public static class Donut {
         public boolean is_donut;
     }
 
-    public static class Item{
+    public static class Item {
         public int id;
         public int from_id;
         public int owner_id;
