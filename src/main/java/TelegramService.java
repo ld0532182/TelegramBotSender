@@ -49,9 +49,6 @@ public class TelegramService {
             messageText = "No new posts found";
             mess.setText(messageText);
         }
-        if ("textForPost".equals(keyWord)){
-
-        }
         return mess;
     }
 

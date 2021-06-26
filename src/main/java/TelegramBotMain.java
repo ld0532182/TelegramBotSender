@@ -48,16 +48,13 @@ public class TelegramBotMain extends TelegramLongPollingBot {
                     try {
                         ArrayList<SendPhoto> photos = telegramSender.sendPhoto(message);
                         System.out.println(photos.size());
-                        for (SendPhoto s: photos){
-                                execute(s);
+                        for (SendPhoto s : photos) {
+                            execute(s);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
-
-
             }
         } catch (TelegramApiException e) {
             e.printStackTrace();
