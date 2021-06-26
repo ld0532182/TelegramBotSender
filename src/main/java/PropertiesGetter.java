@@ -6,13 +6,19 @@ public class PropertiesGetter {
 
     private final String tokenTelegram;
     private final String jsonUrlVk;
-    public static final String PATH_TO_PROPERTIES = "src/main/resources/config.properties";
+    private final String jsonUrlVkWithOffset;
 
+    public static final String PATH_TO_PROPERTIES = "src/main/resources/config.properties";
     public PropertiesGetter() {
         Properties prop = getProperties();
         this.tokenTelegram = prop.getProperty("tokenTelegram");
         this.jsonUrlVk = prop.getProperty("jsonUrlVk");
+        this.jsonUrlVkWithOffset = prop.getProperty("jsonUrlVkWithOffset");
 
+    }
+
+    public String getJsonUrlVkWithOffset() {
+        return jsonUrlVkWithOffset;
     }
 
     public String getTokenTelegram() {

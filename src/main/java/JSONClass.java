@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Root {
+public class JSONClass {
 
     public Response response;
 
