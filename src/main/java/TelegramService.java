@@ -16,11 +16,15 @@ public class TelegramService {
             return null;
         }
         //получаем url фотографий и также текст к ним, путем прибавления к "i" результата деления размера массива на 2.
-        for (int i = 0; i < (getUrlsAndTextPost.size() / 2); i++ ) {
+        for (int i = 0; i < getUrlsAndTextPost.size() - 1; i++ ) {
+            //каждое второе значение это текст к фотографии, его пропускаем, оставляя только url
+            if(i % 2 != 0){
+                continue;
+            }
             SendPhoto photo = new SendPhoto();
             photo.setChatId(message.getChatId().toString());
             photo.setPhoto(new InputFile(getUrlsAndTextPost.get(i)));
-            photo.setCaption(getUrlsAndTextPost.get(i+(getUrlsAndTextPost.size() / 2)));
+            photo.setCaption(getUrlsAndTextPost.get(i+1));
             photos.add(photo);
         }
         return photos;

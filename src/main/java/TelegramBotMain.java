@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class TelegramBotMain extends TelegramLongPollingBot {
     PropertiesGetter prop = new PropertiesGetter();
     TelegramService telegramSender = new TelegramService();
+    boolean isSubscribed = true;
 
     public static void main(String[] args) {
 
@@ -39,25 +40,49 @@ public class TelegramBotMain extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         Message message = update.getMessage();
+        Thread thread = new Thread(() -> {
+            while (isSubscribed) {
+                    try {
+                        executePhoto(message);
+                        Thread.sleep(25000);
+                        System.out.println("Я проснулся");
+                    } catch (InterruptedException | TelegramApiException | IOException e) {
+                        e.printStackTrace();
+                    }
+
+            }
+        });
         try {
             switch (message.getText()) {
                 case "/help" -> execute(telegramSender.sendMessage(message, "/help"));
                 case "/info" -> execute(telegramSender.sendMessage(message, "/info"));
                 case "/check" -> {
                     execute(telegramSender.sendMessage(message, "/check"));
-                    try {
-                        ArrayList<SendPhoto> photos = telegramSender.sendPhoto(message);
-                        System.out.println(photos.size());
-                        for (SendPhoto s : photos) {
-                            execute(s);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    executePhoto(message);
+                }
+                case "/subscribe" -> {
+                    isSubscribed = true;
+                    thread.start();
+                }
+                case "/unsubscribe" -> {
+                    System.out.println("Thread interrupted");
+                    isSubscribed = false;
                 }
             }
-        } catch (TelegramApiException e) {
+        } catch (TelegramApiException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void executePhoto(Message message) throws TelegramApiException, IOException {
+
+        ArrayList<SendPhoto> photos = telegramSender.sendPhoto(message);
+        if (photos == null) {
+            return;
+        }
+        System.out.println(photos.size());
+        for (SendPhoto s : photos) {
+            execute(s);
         }
     }
 }

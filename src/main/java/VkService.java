@@ -5,21 +5,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
 public class VkService {
 
-    private JSONClass JSONClass;
-
     private static int currentPostsCount;
-
+    private static HashSet<Integer> addedPosts = new HashSet<>();
     private static int postsCount = 0;
 
     public VkService() throws IOException {
         String firstJsonUrlVk = new PropertiesGetter().getJsonUrlVk();
-        JSONClass = getJSONClass(firstJsonUrlVk);
-        currentPostsCount = JSONClass.getResponse().getCount();
+        JSONClass jsonClass = getJSONClass(firstJsonUrlVk);
+        currentPostsCount = jsonClass.getResponse().getCount();
     }
 
 
@@ -30,11 +29,16 @@ public class VkService {
         JSONClass currentJson = getJSONClass
                 ("https://api.vk.com/method/wall.get?owner_id=-204646604&count=" + postsCount + currentJsonUrlVk);
         currentPostsCount = currentJson.getResponse().getCount();
-        //получаем url фотографий
+        //получаем url фотографий и проверяем оригинальность постов
         ArrayList<String> urlsAndTextPost = new ArrayList<>();
         List<JSONClass.Item> items = new ArrayList<>(currentJson.getResponse().getItems());
-        for(JSONClass.Item i : items){
-            List<JSONClass.Attachment> attachments = i.getAttachments();
+        //посмотреть, что добавляется в urlsAndTextPost, если посты уже отправлялись.
+        for(JSONClass.Item item : items){
+            if (addedPosts.contains(item.id)) {
+                continue;
+            }
+            addedPosts.add(item.id);
+            List<JSONClass.Attachment> attachments = item.getAttachments();
             for (JSONClass.Attachment attachment : attachments) {
                 if (!"photo".equals(attachment.getType())) {
                     continue;
@@ -42,17 +46,11 @@ public class VkService {
                 urlsAndTextPost.add(attachment.getPhoto().getSizes()
                         .get(attachment.getPhoto().getSizes().size() - 1).getUrl());
             }
-        }
-        //получаем текст к постам и добавляем в массив к url
-        for (int t = 0; t < currentJson.getResponse().getItems().size(); t++) {
-            urlsAndTextPost.add(currentJson.getResponse().getItems().get(t).text);
+            //добавляем в массив текст к посту
+            urlsAndTextPost.add(item.text);
         }
         postsCount = currentPostsCount;
         return urlsAndTextPost;
-    }
-
-    public int getCurrentPostsCount() {
-        return currentPostsCount;
     }
 
     private JSONClass getJSONClass(String currentJsonUrlVk) throws IOException {
