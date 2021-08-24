@@ -8,11 +8,14 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelegramBotMain extends TelegramLongPollingBot {
-    PropertiesGetter prop = new PropertiesGetter();
-    TelegramService telegramSender = new TelegramService();
-    boolean isSubscribed = true;
+    private PropertiesGetter prop = new PropertiesGetter();
+    private TelegramService telegramSender = new TelegramService();
+    private boolean subscribersThread = false;
+    private HashMap<Long, Message> subscribers = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -40,36 +43,50 @@ public class TelegramBotMain extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         Message message = update.getMessage();
-        Thread thread = new Thread(() -> {
-            while (isSubscribed) {
+        //запускаем поток в цикле, чтобы он периодически проверял новые посты без вмешательства пользователя
+        if (!subscribersThread) {
+            subscribersThread = true;
+            Thread thread = new Thread(() -> {
+                while (true) {
                     try {
-                        executePhoto(message);
-                        Thread.sleep(25000);
-                        System.out.println("Я проснулся");
-                    } catch (InterruptedException | TelegramApiException | IOException e) {
+                        if (!subscribers.isEmpty()) {
+                            for (Map.Entry<Long, Message> entry : subscribers.entrySet()) {
+                                Message value = entry.getValue();
+                                executePhoto(value);
+                            }
+                            telegramSender.commitAddedPosts();
+                        }
+                    } catch (TelegramApiException | IOException e) {
                         e.printStackTrace();
                     }
-
-            }
-        });
-        try {
+                    try {
+                        Thread.sleep(25000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
+        try { //получаем сообщение от пользователя и анализируем его
             switch (message.getText()) {
                 case "/help" -> execute(telegramSender.sendMessage(message, "/help"));
                 case "/info" -> execute(telegramSender.sendMessage(message, "/info"));
-                case "/check" -> {
-                    execute(telegramSender.sendMessage(message, "/check"));
-                    executePhoto(message);
-                }
                 case "/subscribe" -> {
-                    isSubscribed = true;
-                    thread.start();
+                    //проверяем, подписывался ли пользователь, если нет, добавляем его в 'subscribers'
+                    if (!subscribers.containsKey(message.getChatId())) {
+                        subscribers.put(message.getChatId(), message);
+                        execute(telegramSender.sendMessage(message, "subscribe"));
+                    } else {
+                        execute(telegramSender.sendMessage(message, "alreadySubscribed"));
+                    }
                 }
                 case "/unsubscribe" -> {
-                    System.out.println("Thread interrupted");
-                    isSubscribed = false;
+                    subscribers.remove(message.getChatId());
+                    execute(telegramSender.sendMessage(message, "unsubscribe"));
                 }
             }
-        } catch (TelegramApiException | IOException e) {
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
@@ -80,7 +97,6 @@ public class TelegramBotMain extends TelegramLongPollingBot {
         if (photos == null) {
             return;
         }
-        System.out.println(photos.size());
         for (SendPhoto s : photos) {
             execute(s);
         }

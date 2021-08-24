@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
+/**
+ * Класс парсит JSON запрос в объет и производит выборку новых постов, формируя из них хешсет.
+ * Он также сохраняет хешсет номеров уже добавленных постов. VK дает каждому посту уникальный номер, начиная с 1..2..3
+ */
 public class VkService {
 
     private static int currentPostsCount;
     private static HashSet<Integer> addedPosts = new HashSet<>();
+    private static HashSet<Integer> tmpAddedPosts = new HashSet<>();
     private static int postsCount = 0;
 
     public VkService() throws IOException {
@@ -21,23 +23,26 @@ public class VkService {
         currentPostsCount = jsonClass.getResponse().getCount();
     }
 
-
+    //здесь мы получаем список url, в связке фото + текст
     public ArrayList<String> getUrlsAndTextPost() throws IOException {
-        String currentJsonUrlVk = new PropertiesGetter().getJsonUrlVkWithOffset();
-        //СДЕЛАТЬ НОРМАЛЬНО
         postsCount = currentPostsCount - postsCount;
-        JSONClass currentJson = getJSONClass
-                ("https://api.vk.com/method/wall.get?owner_id=-204646604&count=" + postsCount + currentJsonUrlVk);
+        //наш url json запрос включает : id группы + отступ кол-ва постов + токен.
+        //Мы устанавливаем отступ, чтобы убрать из обработки посты, которые уже отправлялись пользователям.
+        String currentJsonUrlVk = (new PropertiesGetter().getJsonUrlVk().
+                replaceFirst("offset=0", "offset="+postsCount));
+        JSONClass currentJson = getJSONClass(currentJsonUrlVk);
         currentPostsCount = currentJson.getResponse().getCount();
-        //получаем url фотографий и проверяем оригинальность постов
+
         ArrayList<String> urlsAndTextPost = new ArrayList<>();
+        //на основании текущего json объекта получаем итемы (они же посты в группе) и проверяем на оригинальность
         List<JSONClass.Item> items = new ArrayList<>(currentJson.getResponse().getItems());
-        //посмотреть, что добавляется в urlsAndTextPost, если посты уже отправлялись.
-        for(JSONClass.Item item : items){
+        for (JSONClass.Item item : items) {
             if (addedPosts.contains(item.id)) {
                 continue;
             }
-            addedPosts.add(item.id);
+            tmpAddedPosts.add(item.id);
+            //получаем вложения и проверяем, чтобы это было фото, если это так,
+            //то вытаскиваем самый большой размер фото
             List<JSONClass.Attachment> attachments = item.getAttachments();
             for (JSONClass.Attachment attachment : attachments) {
                 if (!"photo".equals(attachment.getType())) {
@@ -70,5 +75,10 @@ public class VkService {
             e.printStackTrace();
         }
         return jsonClass;
+    }
+
+    public void commitAddedPosts() {
+        addedPosts.addAll(tmpAddedPosts);
+        tmpAddedPosts.clear();
     }
 }

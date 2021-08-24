@@ -1,4 +1,5 @@
 # Project exclude paths
-/target/
-/.idea/
-/src/main/resources/
+target/
+.idea/
+src/main/resources/
+BotProject.iml

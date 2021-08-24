@@ -6,11 +6,24 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/** Класс отвечает за логику ответов на запросы пользователя в telegram и отправку ему сообщений.
+ * Для отправки актуальных постов из VK, используется объект VkService
+ */
+
 public class TelegramService {
+
+    private VkService vkService;
+
+    {
+        try {
+            vkService = new VkService();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public ArrayList<SendPhoto> sendPhoto(Message message) throws IOException {
         ArrayList<SendPhoto> photos = new ArrayList<>();
-        VkService vkService = new VkService();
         ArrayList<String> getUrlsAndTextPost = vkService.getUrlsAndTextPost();
         if (getUrlsAndTextPost.isEmpty()) {
             return null;
@@ -24,6 +37,7 @@ public class TelegramService {
             SendPhoto photo = new SendPhoto();
             photo.setChatId(message.getChatId().toString());
             photo.setPhoto(new InputFile(getUrlsAndTextPost.get(i)));
+            //добавляем текст к посту. в нашем массиве текст к фото находится в позиции "i+1"
             photo.setCaption(getUrlsAndTextPost.get(i+1));
             photos.add(photo);
         }
@@ -40,20 +54,28 @@ public class TelegramService {
                     /info - show info about bot
                     /check - use this command to check new posts""";
             mess.setText(messageText);
-        }
+        } else
         if ("/info".equals(keyWord)) {
             messageText = "I check new posts from vk.com group and send them in this chat.";
             mess.setText(messageText);
-        }
-        if ("/check".equals(keyWord)) {
-            messageText = "Checking posts...";
+        } else
+            if("subscribe".equals(keyWord)){
+                messageText = "You subscribed";
+                mess.setText(messageText);
+        } else
+        if ("alreadySubscribed".equals(keyWord)){
+            messageText = "You've already subscribed";
             mess.setText(messageText);
-        }
-        if ("noNewPosts".equals(keyWord)) {
-            messageText = "No new posts found";
+        } else
+        if ("unsubscribe".equals(keyWord)){
+            messageText = "You've unsubscribed";
             mess.setText(messageText);
         }
         return mess;
+    }
+
+    public void commitAddedPosts() {
+        vkService.commitAddedPosts();
     }
 
 
